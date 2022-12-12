@@ -44,14 +44,11 @@ struct monkey {
 public:
 	std::vector <unsigned int> v;
 	char operationChar{};
-	unsigned int operationNum{};
+	unsigned long long int operationNum{};
 	unsigned int testNum{};
 	unsigned int trueCase{};
 	unsigned int falseCase{};
 	unsigned int inspections{};
-	
-	unsigned int trueCaseCount{};
-	unsigned int falseCaseCount{};
 
 };
 
@@ -137,45 +134,45 @@ int main() {
 		trueCase = 0;
 		falseCase = 0;
 
-			std::cout<<"Round: INIT: \n";
+			/*std::cout<<"Round: INIT: \n";
 			for (int i=0; i<m.size(); i++){
 					std::cout<<"Monkey "<<i<<" items: ";
 					for (int j=0; j<m[i].v.size(); j++){
 						std::cout<<m[i].v[j]<<" ";		
 					}
 					std::cout<<"\n";
-			}
+			}*/
 		
-		for (int i=0; i<20; i++){
-				
+		for (int i=0; i<10000; i++){
+			
+			
+			
 			for (int j{}; j<m.size(); j++){
 				if (m[j].v.size()==0) continue;
 							
 				for(int k{}; k<m[j].v.size(); k++){
-					std::cout<<"Checking monkey: "<<j<<" element: "<<m[j].v[k]<<"\n";
+					//std::cout<<"Checking monkey: "<<j<<" element: "<<m[j].v[k]<<"\n";
 					m[j].inspections++;
-					m[j].operation(k);
-					std::cout<<"After operation: "<<m[j].v[k]<<"\n";
-					m[j].v[k]/=3;
-					std::cout<<"After div3: "<<m[j].v[k]<<"\n";
+					//m[j].operation(k);
+					//std::cout<<"After operation: "<<m[j].v[k]<<"\n";
+					//m[j].v[k]/=3;
+					//std::cout<<"After div3: "<<m[j].v[k]<<"\n";
 					bool isDiv = m[j].isDivisible(k);
 					if(isDiv){
 						m[m[j].trueCase].v.push_back(m[j].v[k]);
 						m[j].v.erase(m[j].v.begin() + k);
 						k--;
-						m[j].trueCaseCount++;
 					} else {
 						m[m[j].falseCase].v.push_back(m[j].v[k]);
 						m[j].v.erase(m[j].v.begin() + k);
 						k--;
-						m[j].falseCaseCount++;
 					}
 				}
 				
 			}
 			
-			//std::cout<<"Round: "<<i<<"\n";
-			/*for (int i=0; i<m.size(); i++){
+			/*std::cout<<"Round: "<<i<<"\n";
+			for (int i=0; i<m.size(); i++){
 					std::cout<<"Monkey "<<i<<" items: ";
 					for (int j=0; j<m[i].v.size(); j++){
 						std::cout<<m[i].v[j]<<" ";		
@@ -194,9 +191,11 @@ int main() {
 		std::vector<unsigned int> insp;
 		for (int i=0; i<m.size(); i++){
 			insp.push_back(m[i].inspections);
-			//std::cout<<"Monkey: "<<i<<" trueCaseCount: "<<m[i].trueCaseCount<<"\n";
-			//std::cout<<"Monkey: "<<i<<" falseCaseCount: "<<m[i].falseCaseCount<<"\n";
-			//std::cout<<"Monkey: "<<i<<" inspections: "<<m[i].inspections<<"\n";			
+					std::cout<<"Monkey: "<<i<<"\n";
+					for (int j=0; j<m[i].v.size(); j++){
+						std::cout<<m[i].v[j]<<" ";
+					}
+					std::cout<<"\n";
 		}
 		
 		plik.close();
