@@ -7,7 +7,7 @@
 
 struct monkey {
 
-	monkey(std::vector<unsigned int> &vec, char& operationChar, unsigned int& operationNum, unsigned int& testNum, unsigned int& trueCase, unsigned int& falseCase) :
+	monkey(std::vector<unsigned long long int> &vec, char& operationChar, unsigned long long int& operationNum, unsigned long long int& testNum, unsigned long long int& trueCase, unsigned long long int& falseCase) :
 		operationChar(operationChar),
 		operationNum(operationNum),
 		testNum(testNum),
@@ -42,13 +42,16 @@ struct monkey {
 			return true;
 		}*/
 public:
-	std::vector <unsigned int> v;
+	std::vector <unsigned long long int> v;
 	char operationChar{};
 	unsigned long long int operationNum{};
-	unsigned int testNum{};
-	unsigned int trueCase{};
-	unsigned int falseCase{};
-	unsigned int inspections{};
+	unsigned long long int testNum{};
+	unsigned long long int trueCase{};
+	unsigned long long int falseCase{};
+	unsigned long long int inspections{};
+	
+	unsigned long long int trueCaseCount{};
+	unsigned long long int falseCaseCount{};
 
 };
 
@@ -59,18 +62,18 @@ int main() {
 	std::ifstream  plik;
 	plik.open("day11_input.txt", std::ios::in);
 	std::string temp;
-	unsigned long int answer{};
+	unsigned long long int answer{};
 
 	if (plik.is_open()) {
 		std::cout << "File opened\n";
 
 		std::vector<monkey> m;
-		std::vector<unsigned int> v;
+		std::vector<unsigned long long int> v;
 		char operationChar{};
-		unsigned int operationNum{};
-		unsigned int testNum{};
-		unsigned int trueCase{};
-		unsigned int falseCase{};
+		unsigned long long int operationNum{};
+		unsigned long long int testNum{};
+		unsigned long long int trueCase{};
+		unsigned long long int falseCase{};
 
 		while (getline(plik, temp)) {
 
@@ -135,44 +138,51 @@ int main() {
 		falseCase = 0;
 
 			/*std::cout<<"Round: INIT: \n";
-			for (int i=0; i<m.size(); i++){
+			for (unsigned long long int i=0; i<m.size(); i++){
 					std::cout<<"Monkey "<<i<<" items: ";
-					for (int j=0; j<m[i].v.size(); j++){
+					for (unsigned long long int j=0; j<m[i].v.size(); j++){
 						std::cout<<m[i].v[j]<<" ";		
 					}
 					std::cout<<"\n";
 			}*/
+		unsigned long long int supermodulo{1};
 		
-		for (int i=0; i<10000; i++){
-			
-			
-			
-			for (int j{}; j<m.size(); j++){
+		for (unsigned long long int i=0; i<m.size(); i++){
+			supermodulo*=m[i].testNum;
+		}
+		
+		std::cout<<"Supermodulo: "<<supermodulo<<"\n";
+		
+		for (unsigned long long int i=0; i<10000; i++){
+				
+			for (unsigned long long int j{}; j<m.size(); j++){
 				if (m[j].v.size()==0) continue;
 							
-				for(int k{}; k<m[j].v.size(); k++){
+				for(unsigned long long int k{}; k<m[j].v.size(); k++){
 					//std::cout<<"Checking monkey: "<<j<<" element: "<<m[j].v[k]<<"\n";
 					m[j].inspections++;
-					//m[j].operation(k);
+					m[j].operation(k);
 					//std::cout<<"After operation: "<<m[j].v[k]<<"\n";
 					//m[j].v[k]/=3;
 					//std::cout<<"After div3: "<<m[j].v[k]<<"\n";
 					bool isDiv = m[j].isDivisible(k);
 					if(isDiv){
-						m[m[j].trueCase].v.push_back(m[j].v[k]);
+						m[m[j].trueCase].v.push_back(m[j].v[k]%supermodulo);
 						m[j].v.erase(m[j].v.begin() + k);
 						k--;
+						m[j].trueCaseCount++;
 					} else {
-						m[m[j].falseCase].v.push_back(m[j].v[k]);
+						m[m[j].falseCase].v.push_back(m[j].v[k]%supermodulo);
 						m[j].v.erase(m[j].v.begin() + k);
 						k--;
+						m[j].falseCaseCount++;
 					}
 				}
 				
 			}
 			
-			/*std::cout<<"Round: "<<i<<"\n";
-			for (int i=0; i<m.size(); i++){
+			//std::cout<<"Round: "<<i<<"\n";
+			/*for (int i=0; i<m.size(); i++){
 					std::cout<<"Monkey "<<i<<" items: ";
 					for (int j=0; j<m[i].v.size(); j++){
 						std::cout<<m[i].v[j]<<" ";		
@@ -188,20 +198,18 @@ int main() {
 					}
 					std::cout<<"\n";
 				}*/
-		std::vector<unsigned int> insp;
-		for (int i=0; i<m.size(); i++){
+		std::vector<unsigned long long int> insp;
+		for (unsigned long long int i=0; i<m.size(); i++){
 			insp.push_back(m[i].inspections);
-					std::cout<<"Monkey: "<<i<<"\n";
-					for (int j=0; j<m[i].v.size(); j++){
-						std::cout<<m[i].v[j]<<" ";
-					}
-					std::cout<<"\n";
+			//std::cout<<"Monkey: "<<i<<" trueCaseCount: "<<m[i].trueCaseCount<<"\n";
+			//std::cout<<"Monkey: "<<i<<" falseCaseCount: "<<m[i].falseCaseCount<<"\n";
+			//std::cout<<"Monkey: "<<i<<" inspections: "<<m[i].inspections<<"\n";			
 		}
 		
 		plik.close();
 		
 		std::sort(insp.begin(), insp.end());
-		answer=insp[insp.size()-2]*insp[insp.size()-1];
+		answer = insp[insp.size()-2]*insp[insp.size()-1];
 		std::cout << "Answer: " << answer << "\n";
 
 		auto finish = std::chrono::high_resolution_clock::now();
@@ -216,6 +224,5 @@ int main() {
 	}
 
 	plik.close();
-
 
 }

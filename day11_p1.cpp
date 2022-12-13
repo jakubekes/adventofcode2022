@@ -62,7 +62,7 @@ int main() {
 	std::ifstream  plik;
 	plik.open("day11_input.txt", std::ios::in);
 	std::string temp;
-	unsigned long int answer{};
+	unsigned int answer{};
 
 	if (plik.is_open()) {
 		std::cout << "File opened\n";
@@ -138,20 +138,20 @@ int main() {
 		falseCase = 0;
 
 			std::cout<<"Round: INIT: \n";
-			for (int i=0; i<m.size(); i++){
+			for (unsigned int i=0; i<m.size(); i++){
 					std::cout<<"Monkey "<<i<<" items: ";
-					for (int j=0; j<m[i].v.size(); j++){
+					for (unsigned int j=0; j<m[i].v.size(); j++){
 						std::cout<<m[i].v[j]<<" ";		
 					}
 					std::cout<<"\n";
 			}
 		
-		for (int i=0; i<20; i++){
+		for (unsigned int i=0; i<20; i++){
 				
-			for (int j{}; j<m.size(); j++){
+			for (unsigned int j{}; j<m.size(); j++){
 				if (m[j].v.size()==0) continue;
 							
-				for(int k{}; k<m[j].v.size(); k++){
+				for(unsigned int k{}; k<m[j].v.size(); k++){
 					std::cout<<"Checking monkey: "<<j<<" element: "<<m[j].v[k]<<"\n";
 					m[j].inspections++;
 					m[j].operation(k);
@@ -192,7 +192,7 @@ int main() {
 					std::cout<<"\n";
 				}*/
 		std::vector<unsigned int> insp;
-		for (int i=0; i<m.size(); i++){
+		for (unsigned int i=0; i<m.size(); i++){
 			insp.push_back(m[i].inspections);
 			//std::cout<<"Monkey: "<<i<<" trueCaseCount: "<<m[i].trueCaseCount<<"\n";
 			//std::cout<<"Monkey: "<<i<<" falseCaseCount: "<<m[i].falseCaseCount<<"\n";
