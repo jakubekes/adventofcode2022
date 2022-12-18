@@ -29,6 +29,7 @@ int main() {
 	unsigned int answer{};
 	std::queue <point*> mainQueue;
 	std::vector <point*> vanswer;
+	std::vector <point*> aPoints;
 	
 	if (plik.is_open()) {
 		std::cout << "File opened\n";
@@ -47,6 +48,7 @@ int main() {
 					vtemp.push_back(new point(j,i,'a'));	
 					continue;
 				}	
+				
 				if(temp[i]=='E'){
 					ex=i;
 					ey=j;
