@@ -19,6 +19,12 @@ struct point{
 	bool used{};
 };
 
+void clearQ( std::queue<point*> &q )
+{
+   std::queue<point*> empty;
+   std::swap( q, empty );
+}
+
 int main() {
 
 	auto start = std::chrono::high_resolution_clock::now();
@@ -26,7 +32,7 @@ int main() {
 	std::ifstream  plik;
 	plik.open("day12_input.txt", std::ios::in);
 	std::string temp;
-	unsigned int answer{};
+	unsigned int answer{420};
 	std::queue <point*> mainQueue;
 	std::vector <point*> vanswer;
 	std::vector <point*> aPoints;
@@ -42,13 +48,13 @@ int main() {
 		while (getline(plik, temp)) {
 			
 			for(int i{}; i<temp.length(); i++){
-				if(temp[i]=='S'){
+				if(temp[i]=='S' || temp[i] == 'a'){
 					sx=i;
 					sy=j;
 					vtemp.push_back(new point(j,i,'a'));	
+					aPoints.push_back(vtemp[vtemp.size()-1]);
 					continue;
 				}	
-				
 				if(temp[i]=='E'){
 					ex=i;
 					ey=j;
@@ -64,27 +70,25 @@ int main() {
 			vtemp.clear();	
 		}		
 		plik.close();
+
 		
-		mainQueue.push(v[sy][sx]);
-		v[sy][sx]->used=true;
-		v[sy][sx]->stepVal=0;
-		
-		//if(sx-1>=0 && v[sy][sx-1]->val-97<2) mainQueue.top()->connections.push(v[sy][sx-1]);
-		//if(sx+1<v[0].size() && v[sy][sx+1]->val-97<2) mainQueue.top()->connections.push(v[sy][sx+1]);
-		//if(sy-1>=0 && v[sy-1][sx]->val-97<2) mainQueue.top()->connections.push(v[sy-1][sx]);
-		//if(sy+1<v.size() && v[sy+1][sx]->val-97<2) mainQueue.top()->connections.push(v[sy+1][sx]);
-		
-		long int steps{};
-		std::vector<long int> stepsv;
-		bool returned{};
+		for (size_t i{}; i<aPoints.size(); i++){
+			
 		point* p;
+		mainQueue.push(aPoints[i]);
+		aPoints[i]->used=true;
+		aPoints[i]->stepVal=0;
+		bool reachedE{};
 
 		while(!mainQueue.empty()){
 						
 			p = mainQueue.front();
-			std::cout<<p->val<<" | y: "<<p->y<<" x: "<<p->x<<"\n";
+			//std::cout<<p->val<<" | y: "<<p->y<<" x: "<<p->x<<"\n";
 			vanswer.push_back(p);
-			if(p->x==ex && p->y==ey)break;
+			if(p->x==ex && p->y==ey){
+				reachedE=true;
+				break;
+			}
 			
 			mainQueue.pop();
 			
@@ -116,16 +120,22 @@ int main() {
 				mainQueue.back()->used=true;
 				mainQueue.back()->stepVal=v[sy][sx]->stepVal+1;
 			}
-						
-			
+									
 		}
 		
-		for(int i{}; i<vanswer.size()-1; i++){
-			if (vanswer[i]->stepVal!=vanswer[i+1]->stepVal)answer+=vanswer[i]->stepVal;
+		for(int i{}; i<vanswer.size(); i++){
+			vanswer[i]->used=false;
 		}
-
-		std::cout << "Answer: " << vanswer[vanswer.size()-1]->stepVal << "\n";
-
+		
+		if(reachedE && vanswer[vanswer.size()-1]->stepVal<answer) answer=vanswer[vanswer.size()-1]->stepVal;
+		
+		vanswer.clear();
+		clearQ(mainQueue);
+		
+		}
+		
+		std::cout<<"Answer: "<<answer<<"\n";
+		
 		auto finish = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> elapsed = finish - start;
 		printf("Elapsed time: %f\n", elapsed.count());

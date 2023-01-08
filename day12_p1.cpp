@@ -80,7 +80,7 @@ int main() {
 		while(!mainQueue.empty()){
 						
 			p = mainQueue.front();
-			std::cout<<p->val<<" | y: "<<p->y<<" x: "<<p->x<<"\n";
+			//std::cout<<p->val<<" | y: "<<p->y<<" x: "<<p->x<<"\n";
 			vanswer.push_back(p);
 			if(p->x==ex && p->y==ey)break;
 			
@@ -118,9 +118,9 @@ int main() {
 			
 		}
 		
-		for(int i{}; i<vanswer.size()-1; i++){
+		/*for(int i{}; i<vanswer.size()-1; i++){
 			if (vanswer[i]->stepVal!=vanswer[i+1]->stepVal)answer+=vanswer[i]->stepVal;
-		}
+		}*/
 
 		std::cout << "Answer: " << vanswer[vanswer.size()-1]->stepVal << "\n";
 
