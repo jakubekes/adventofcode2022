@@ -7,6 +7,53 @@
 #include <chrono>
 #include <algorithm>
 
+struct numOrList{
+	
+	numOrList(int a, int b, int c, int d, bool e):
+	idxStart(a),
+	idxEnd(b),
+	pos(c), 
+	level(d), 
+	list (e){}
+	
+	int idxStart{};
+	int idxEnd{};
+	int pos{};
+	int level{};
+	bool list{};
+};
+
+void getNextElement(std::stack <numOrList> &stack1, std::string &s1) {
+	
+	if (s1[stack1.top().pos]>=48 && s1[stack1.top().pos]<=57){
+		if (s1[stack1.top().pos+1]>=48 && s1[stack1.top().pos+1]<=57){
+			int stackToptemp = stack1.top().pos;
+			stack1.top().pos+=3;
+			stack1.push( numOrList(stackToptemp, stackToptemp+1,0,0,false) );
+			std::cout << "++ adding stack num 10\n";
+		} else {
+			int stackToptemp = stack1.top().pos;
+			stack1.top().pos+=2;
+			stack1.push( numOrList(stackToptemp, stackToptemp,0,0,false) );
+			std::cout << "++ adding stack num 0-9\n";
+		}
+	} else {
+		int openBracketCount{1};
+		int closeBracketCount{0};
+		for(int i{stack1.top().pos+1}; i<=stack1.top().idxEnd; i++){
+			if(s1[i] == '[') openBracketCount++;
+			if(s1[i] == ']') closeBracketCount++;		
+			if(openBracketCount == closeBracketCount){
+				int stackToptemp = stack1.top().pos;
+				stack1.top().pos=i+2;
+				stack1.push( numOrList(stackToptemp+1, i-1,0,0,true) );
+				std::cout << "++ adding stack list\n";
+				break;
+			}
+		}
+	}
+}
+
 int main() {
 
 	auto start = std::chrono::high_resolution_clock::now();
@@ -22,7 +69,7 @@ int main() {
 		std::vector<std::vector<int>> v1, v2;
 		std::vector<int> vtemp;
 		bool vflag{ 1 };
-		bool squareBracketFlag{};
+		std::string s1,s2;
 		int index{};
 		
 		while (getline(plik, temp)) {
@@ -32,153 +79,77 @@ int main() {
 			if (vflag) {
 				vflag = 0;
 				index++;
+				s1 = temp;
 			}
 			else {
 				vflag = 1;
-			}
-			//if closing bracket flag then next number is 'alone'/not in any list, must be put into the list
-			//all single elements  between 2x [ should be put into new list
-			for (int i{}; i < temp.length(); i++) {
-
-				if (temp[i] == '[' && temp[i+1] == ']') {
-					
-					if(vtemp.size()>0){
-						if (vflag) {
-						v2.push_back(vtemp);
-						}
-						else {
-						v1.push_back(vtemp);
-						}
-						vtemp.clear();
-					}
-					vtemp.push_back(-1);
-					if (vflag) {
-						v2.push_back(vtemp);
-					}
-					else {
-						v1.push_back(vtemp);
-					}
-					vtemp.clear();
-					squareBracketFlag = 1;
-					continue;
+				s2 = temp;
 				
-				} else if (temp[i] == '[' && vtemp.size()>0) {
-					if (vflag) {
-						v2.push_back(vtemp);
-					}
-					else {
-						v1.push_back(vtemp);
-					}
-					vtemp.clear();
-					squareBracketFlag=0;
-					continue;
-				} else if (temp[i] == ']' && vtemp.size()>0){
-					if (vflag) {
-						v2.push_back(vtemp);
-					}
-					else {
-						v1.push_back(vtemp);
-					}
-					vtemp.clear();
-					squareBracketFlag = 1;
-					continue;
-				} else if (temp[i] == '[' && vtemp.size()==0){
-					squareBracketFlag=0;
-					continue;
-				} else if (temp[i] == ']'){
-					continue;
-				}
+				// we have now lines pair and can compare
+				std::stack <numOrList> stack1;
+				std::stack <numOrList> stack2;
 				
-				if (temp[i] == ','){
-					continue;
-				}
+				stack1.push(numOrList(1, s1.length()-2,1,0,true));
+				stack2.push(numOrList(1, s2.length()-2,1,0,true));
 				
-				if (temp[i + 1] <= 57 && temp[i + 1] >= 48) {
-					vtemp.push_back(10);
-					i++;
-				}
-				else {
-					vtemp.push_back(int(temp[i]) - 48);
-				}
-
-
-			}
-
-			if (vflag == 1) {
-				std::cout<<"	INDEX: "<<index<<" ";
-				for (int i{}; i < v1.size(); i++) {	
-					bool breakCheck{};				
-					for (int j{}; j < v1[i].size(); j++) {	
+				while (!stack1.empty()){
+					std::cout<<"<<while>> stack1 is not empty\n";
+					std::cout<<"--stack1 pos: "<<stack1.top().pos<<"\n";
+					std::cout<<"--stack2 pos: "<<stack2.top().pos<<"\n";
+					if(stack1.top().pos < stack1.top().idxEnd && stack2.top().pos < stack2.top().idxEnd){
+						std::cout<<"both pos are under idxEnd\n";
+						if(stack1.top().list==true && stack2.top().list==true){
+							std::cout<<"both stack top are lists\n";
+							getNextElement(stack1, s1);
+							getNextElement(stack2, s2);
+						} else if (stack1.top().list==true && stack2.top().list==false){
+							std::cout<<"stack1 is list\n";
+							getNextElement(stack2, s2);
+						} else if (stack1.top().list==false && stack2.top().list==true){
+							std::cout<<"stack2 is list\n";
+							getNextElement(stack1, s1);
+						} else {
+							std::cout<<"both stack top are nums\n";
+							std::cout<<"---Num1: "<<s1.substr(stack1.top().idxStart,stack1.top().idxEnd)<<"\n";
+							std::cout<<"---Num2: "<<s2.substr(stack2.top().idxStart,stack2.top().idxEnd)<<"\n";
+							if(std::stoi(s1.substr(stack1.top().idxStart,stack1.top().idxEnd))<std::stoi(s2.substr(stack2.top().idxStart,stack2.top().idxEnd))){
+								std::cout<<"----Num1 < Num2\n";
+								sum+=index;
+								break;
+							} else if(std::stoi(s1.substr(stack1.top().idxStart,stack1.top().idxEnd))>std::stoi(s2.substr(stack2.top().idxStart,stack2.top().idxEnd))){
+								std::cout<<"----Num1 > Num2\n";
+								break;
+							} else {
+								std::cout<<"----Num1 == Num2\n";
+								stack1.pop();
+								stack2.pop();
+								continue;
+							}
+						}
 					
-						if (i == v2.size()){
-							breakCheck = 1;
-							std::cout<<"STAGE0 NO\n";
-							break;
-						}
 						
-						if (j==v2[i].size()){
-							breakCheck = 1;
-							std::cout<<"STAGE1 NO\n";
-							break;
-						}
+					} else if(stack1.top().pos >= stack1.top().idxEnd && stack2.top().pos < stack2.top().idxEnd){
 						
-						if (v2[i][j] == -1){
-							breakCheck = 1;
-							std::cout<<"STAGE1.1 NO\n";
-							break;
-						}
+						//left side finished, OK
+					} else if(stack1.top().pos < stack1.top().idxEnd && stack2.top().pos >= stack2.top().idxEnd){
 						
-						if(v1[i][j] > v2[i][j]){
-							breakCheck = 1;
-							std::cout<<"STAGE2 NO\n";
-							break;
-						} else if(v1[i][j] < v2[i][j]){
-							sum += index;
-							breakCheck = 1;
-							std::cout<<"STAGE3 YES\n";
-							break;
-						}
+						//right side finished, BAD
+					} else{
 						
-						if(i==v1.size()-1 && j==v1[i].size()-1){
-						sum += index;
-						std::cout<<"STAGE4 YES\n";
-						}
+						// both sides finished without break, OK
+						stack1.pop();
+						stack2.pop();
+						continue;
 					}
-
-					if(breakCheck) break;
-					
 					
 				}
-
-				std::cout<<"v1: "<<v1.size()<<"\n";
-				for(int i{}; i<v1.size(); i++){
-				for(int j{}; j<v1[i].size(); j++){
-					std::cout<<v1[i][j]<<", ";
-				}
-				std::cout<<"size: "<<v1[i].size()<<"\n";
-				}
-
-				std::cout<<"v2: "<<v2.size()<<"\n";
-				for(int i{}; i<v2.size(); i++){
-				for(int j{}; j<v2[i].size(); j++){
-					std::cout<<v2[i][j]<<", ";
-				}
-				std::cout<<"size: "<<v2[i].size()<<"\n";
-				}
-
-				v1.clear();
-				v2.clear();
-			}
+			}	
 		}
 		plik.close();
-
 		std::cout << "Answer: " << sum;
-
 	}
 	else {
-
 		std::cout << "Nie otwarto pliku";
-
 	}
 
 }
