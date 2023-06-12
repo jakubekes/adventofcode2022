@@ -29,12 +29,12 @@ void getNextElement(std::stack <numOrList> &stack1, std::string &s1) {
 		if (s1[stack1.top().pos+1]>=48 && s1[stack1.top().pos+1]<=57){
 			int stackToptemp = stack1.top().pos;
 			stack1.top().pos+=3;
-			stack1.push( numOrList(stackToptemp, stackToptemp+1,0,0,false) );
+			stack1.push( numOrList(stackToptemp, stackToptemp+1,stackToptemp+3,0,false) );
 			std::cout << "++ adding stack num 10\n";
 		} else {
 			int stackToptemp = stack1.top().pos;
 			stack1.top().pos+=2;
-			stack1.push( numOrList(stackToptemp, stackToptemp,0,0,false) );
+			stack1.push( numOrList(stackToptemp, stackToptemp,stackToptemp+2,0,false) );
 			std::cout << "++ adding stack num 0-9\n";
 		}
 	} else {
@@ -46,8 +46,10 @@ void getNextElement(std::stack <numOrList> &stack1, std::string &s1) {
 			if(openBracketCount == closeBracketCount){
 				int stackToptemp = stack1.top().pos;
 				stack1.top().pos=i+2;
-				stack1.push( numOrList(stackToptemp+1, i-1,0,0,true) );
+				stack1.push( numOrList(stackToptemp, i,stackToptemp+1,0,true) );
 				std::cout << "++ adding stack list\n";
+				std::cout << "\t idxStart: "<<stackToptemp<<"\n";
+				std::cout << "\t idxEnd: "<<i<<"\n";
 				break;
 			}
 		}
@@ -89,27 +91,59 @@ int main() {
 				std::stack <numOrList> stack1;
 				std::stack <numOrList> stack2;
 				
-				stack1.push(numOrList(1, s1.length()-2,1,0,true));
-				stack2.push(numOrList(1, s2.length()-2,1,0,true));
+				stack1.push(numOrList(0, s1.length()-1,1,0,true));
+				stack2.push(numOrList(0, s2.length()-1,1,0,true));
 				
 				while (!stack1.empty()){
 					std::cout<<"<<while>> stack1 is not empty\n";
 					std::cout<<"--stack1 pos: "<<stack1.top().pos<<"\n";
 					std::cout<<"--stack2 pos: "<<stack2.top().pos<<"\n";
-					if(stack1.top().pos < stack1.top().idxEnd && stack2.top().pos < stack2.top().idxEnd){
-						std::cout<<"both pos are under idxEnd\n";
-						if(stack1.top().list==true && stack2.top().list==true){
-							std::cout<<"both stack top are lists\n";
+					
+					if (stack1.top().list==true && stack2.top().list==true){
+
+						if (stack2.top().idxEnd-stack2.top().idxStart==1){
+							std::cout<<"empty right list, BAD\n";
+							break;
+						}
+	
+						if(stack1.top().pos < stack1.top().idxEnd && stack2.top().pos < stack2.top().idxEnd){
+							std::cout<<"both stack top are unfinished lists\n";
 							getNextElement(stack1, s1);
 							getNextElement(stack2, s2);
-						} else if (stack1.top().list==true && stack2.top().list==false){
-							std::cout<<"stack1 is list\n";
-							getNextElement(stack2, s2);
-						} else if (stack1.top().list==false && stack2.top().list==true){
-							std::cout<<"stack2 is list\n";
-							getNextElement(stack1, s1);
+						} else if (stack1.top().pos < stack1.top().idxEnd){
+							std::cout<<"right side finished, BAD\n";
+							break;
+						} else if (stack2.top().pos < stack2.top().idxEnd){
+							std::cout<<"left side finished, OK\n";
+							sum+=index;
+							break;
 						} else {
-							std::cout<<"both stack top are nums\n";
+							std::cout<<"both side finished, OK\n";
+							sum+=index;
+							break;
+						}
+						
+					} else if (stack1.top().list==true && stack2.top().list==false){
+						
+						if(stack1.top().pos >= stack1.top().idxEnd){
+							std::cout<<"left side finished, OK\n";
+							sum+=index;
+							break;
+						}
+						std::cout<<"stack1 is list\n";
+						getNextElement(stack1, s1);
+						
+					} else if (stack1.top().list==false && stack2.top().list==true){
+						
+						if(stack2.top().pos >= stack2.top().idxEnd){
+							std::cout<<"right side finished, BAD\n";
+							break;
+						}
+						std::cout<<"stack2 is list\n";
+						getNextElement(stack2, s2);
+					} else {
+						
+						std::cout<<"both stack top are nums\n";
 							std::cout<<"---Num1: "<<s1.substr(stack1.top().idxStart,stack1.top().idxEnd)<<"\n";
 							std::cout<<"---Num2: "<<s2.substr(stack2.top().idxStart,stack2.top().idxEnd)<<"\n";
 							if(std::stoi(s1.substr(stack1.top().idxStart,stack1.top().idxEnd))<std::stoi(s2.substr(stack2.top().idxStart,stack2.top().idxEnd))){
@@ -125,21 +159,7 @@ int main() {
 								stack2.pop();
 								continue;
 							}
-						}
-					
 						
-					} else if(stack1.top().pos >= stack1.top().idxEnd && stack2.top().pos < stack2.top().idxEnd){
-						
-						//left side finished, OK
-					} else if(stack1.top().pos < stack1.top().idxEnd && stack2.top().pos >= stack2.top().idxEnd){
-						
-						//right side finished, BAD
-					} else{
-						
-						// both sides finished without break, OK
-						stack1.pop();
-						stack2.pop();
-						continue;
 					}
 					
 				}
