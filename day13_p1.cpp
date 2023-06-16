@@ -68,27 +68,37 @@ void getNextElement(std::stack <numOrList> &stack1, std::string &s1) {
 
 
 	
-void checkIndexCorrectness (int &index, std::queue<int> correctIndexes, std::string &s1, std::string &s2, bool result, std::fstream &plik3){
+void checkIndexCorrectness (int &index, std::queue<int> &correctIndexes, std::string &s1, std::string &s2, bool result, std::fstream &plik3){
 	
 	if(index == correctIndexes.front()){
 		if(result==true){
+			std::cout<<"INDEX: "<<index<<"\n";	
+			std::cout<<"INDEX_Q: "<<correctIndexes.front()<<"\n";				
 			std::cout<<"Should be true and it's true\n";			
 		} else {
+			std::cout<<"INDEX: "<<index<<"\n";	
+			std::cout<<"INDEX_Q: "<<correctIndexes.front()<<"\n";			
 			std::cout<<"Should be true and it's false!!!\n";
 			std::cout<<s1<<"\n";
 			std::cout<<s2<<"\n\n";
+			plik3<<"Index: "<<index<<"\n";			
 			plik3<<s1<<"\n";
 			plik3<<s2<<"\n\n";
 		}
 		correctIndexes.pop();
 	} else {
 		if(result==true){
+			std::cout<<"INDEX: "<<index<<"\n";
+			std::cout<<"INDEX_Q: "<<correctIndexes.front()<<"\n";			
 			std::cout<<"Should be false and it's true!!!\n";
 			std::cout<<s1<<"\n";
 			std::cout<<s2<<"\n\n";	
+			plik3<<"Index: "<<index<<"\n";
 			plik3<<s1<<"\n";
 			plik3<<s2<<"\n\n";			
 		} else {
+			std::cout<<"INDEX: "<<index<<"\n";	
+			std::cout<<"INDEX_Q: "<<correctIndexes.front()<<"\n";			
 			std::cout<<"Should be false and it's false\n";
 		}
 	}
@@ -161,20 +171,13 @@ int main() {
 						if (stack2.top().idxEnd-stack2.top().idxStart==1 && stack1.top().idxEnd-stack1.top().idxStart==1){
 							std::cout<<"empty both list, OK\n";
 							stack1.pop();
-							stack2.pop();							
-							if(stack1.empty() && stack2.empty()){
-								std::cout<<"..be the dead end, OK\n";
-								sum+=index;
-plik3<<index<<"\n";
-								//checkIndexCorrectness(index, correctIndexes, s1, s2, true, plik3);
-								break;
-							}
+							stack2.pop();														
 							continue;
 						} else if (stack1.top().idxEnd-stack1.top().idxStart==1){
 							std::cout<<"empty left list, OK\n";
 							sum+=index;
-plik3<<index<<"\n";
-							//checkIndexCorrectness(index, correctIndexes, s1, s2, true, plik3);
+//plik3<<index<<"\n";
+							checkIndexCorrectness(index, correctIndexes, s1, s2, true, plik3);
 							break;
 						} else if (stack2.top().idxEnd-stack2.top().idxStart==1){
 							std::cout<<"empty right list, BAD\n";
@@ -192,31 +195,31 @@ plik3<<index<<"\n";
 							break;
 						} else if (stack2.top().pos < stack2.top().idxEnd){
 							std::cout<<"left side finished, OK\n";
-							//checkIndexCorrectness(index, correctIndexes, s1, s2, true, plik3);
+							checkIndexCorrectness(index, correctIndexes, s1, s2, true, plik3);
 							sum+=index;
-plik3<<index<<"\n";
+//plik3<<index<<"\n";
 							break;
-						} else {							
-							if(stack1.size()==1){
-								std::cout<<"both side finished, OK\n";	
+						} else {				 //??????????????????????			
+							//if(stack1.size()==1){
+								//std::cout<<"both side finished, OK\n";	
 								//checkIndexCorrectness(index, correctIndexes, s1, s2, true, plik3);
-								sum+=index;
-plik3<<index<<"\n";
-								break;
-							} else {
+								//sum+=index;
+//plik3<<index<<"\n";
+							//	break;
+							//} else {
 								stack1.pop();
 								stack2.pop();
 								continue;
-							}
+							//}
 						}
 						
 					} else if (stack1.top().list==true && stack2.top().list==false){
 						
 						if(stack1.top().pos >= stack1.top().idxEnd){
 							std::cout<<"left side finished, OK\n";
-							//checkIndexCorrectness(index, correctIndexes, s1, s2, true, plik3);
+							checkIndexCorrectness(index, correctIndexes, s1, s2, true, plik3);
 							sum+=index;
-plik3<<index<<"\n";
+//plik3<<index<<"\n";
 							break;
 						}
 						std::cout<<"stack1 is list\n";
@@ -240,9 +243,9 @@ plik3<<index<<"\n";
 							std::cout<<"---Num2: "<<s2.substr(stack2.top().idxStart,stack2.top().numDigits)<<"\n";
 							if(std::stoi(s1.substr(stack1.top().idxStart,stack1.top().numDigits))<std::stoi(s2.substr(stack2.top().idxStart,stack2.top().numDigits))){
 								std::cout<<"----Num1 < Num2\n";
-								//checkIndexCorrectness(index, correctIndexes, s1, s2, true, plik3);
+								checkIndexCorrectness(index, correctIndexes, s1, s2, true, plik3);
 								sum+=index;
-plik3<<index<<"\n";
+//plik3<<index<<"\n";
 								break;
 							} else if(std::stoi(s1.substr(stack1.top().idxStart,stack1.top().numDigits))>std::stoi(s2.substr(stack2.top().idxStart,stack2.top().numDigits))){
 								std::cout<<"----Num1 > Num2\n";
@@ -256,9 +259,9 @@ plik3<<index<<"\n";
 									break;
 								} else if (stack1.top().isLastNum && !stack2.top().isLastNum){
 									std::cout<<"...but diff isLastNum, left out of items\n";
-									//checkIndexCorrectness(index, correctIndexes, s1, s2, true, plik3);
+									checkIndexCorrectness(index, correctIndexes, s1, s2, true, plik3);
 									sum+=index;
-plik3<<index<<"\n";
+//plik3<<index<<"\n";
 									break;	
 								}
 								stack1.pop();
@@ -267,13 +270,14 @@ plik3<<index<<"\n";
 							}	
 					}
 					
-				}
+				}					
+					
 				
 			}	
 		}
 		plik.close();
 		plik3.close();
-		std::cout << "Answer: " << sum;
+		std::cout << "Answer: " << sum << " / Good answer: 6428\n";
 	}
 	else {
 		std::cout << "Nie otwarto pliku";
