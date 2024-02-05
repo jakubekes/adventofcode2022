@@ -1,8 +1,6 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include <vector>
-#include <algorithm>
 #include <chrono>
 
 int main() {
@@ -10,7 +8,7 @@ int main() {
 	auto start = std::chrono::high_resolution_clock::now();
 	
 	std::ifstream  plik;
-	plik.open("day10_input.txt", std::ios::in);
+	plik.open("day10_input.txt");
 	std::string temp;
 	unsigned long int answer{};
 	
@@ -55,14 +53,11 @@ int main() {
 		auto finish = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> elapsed = finish - start;
         printf("Elapsed time: %f\n",elapsed.count());
-
-	} else {
+	}
+	else {
 		
-		std::cout << "Nie otwarto pliku";	
-		
+		std::cout << "File not opened, quitting.";
 	}
 
 	plik.close();
-
-
 }

@@ -7,10 +7,11 @@
 int main() {
 
 	std::ifstream  plik;
-	plik.open("day5_input.txt", std::ios::in);
+	plik.open("day5_input.txt");
 	std::string temp;
 	std::string answer{};
 	std::vector <std::stack<char>*> v, vec;
+	
 	for(size_t i{}; i<9; i++){
 		v.push_back(new std::stack<char>);
 		vec.push_back(new std::stack<char>);
@@ -48,7 +49,6 @@ int main() {
 			
 			std::stack <char> sttemp;
 			for(size_t i{}; i<a; i++){
-				//vec[c-1]->push(vec[b-1]->top());
 				sttemp.push(vec[b-1]->top());
 				vec[b-1]->pop();
 			}
@@ -57,25 +57,17 @@ int main() {
 				sttemp.pop();
 			}
 		}
-		
-				
+			
 		for(size_t i{}; i<9; i++){
 			answer+=vec[i]->top();
 		}
 		
 		std::cout<<"Answer: "<<answer<<"\n";
-		
-		
-		
-		
 	}
 	else {
 		
-		std::cout << "Nie otwarto pliku";
-		
+		std::cout << "File not opened, quitting.";
 	}
 
 	plik.close();
-
-
 }

@@ -7,7 +7,7 @@
 int main() {
 
 	std::ifstream  plik;
-	plik.open("day9_input.txt", std::ios::in);
+	plik.open("day9_input.txt");
 	std::string temp;
 	unsigned long int answer{};
 	std::vector <std::string> v;
@@ -80,14 +80,11 @@ int main() {
 		}
 		
 		std::cout<<"Answer: "<<answer+1<<"\n";
-
-	} else {
+	}
+	else {
 		
-		std::cout << "Nie otwarto pliku";	
-		
+		std::cout << "File not opened, quitting.";
 	}
 
 	plik.close();
-
-
 }

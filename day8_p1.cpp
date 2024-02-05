@@ -49,7 +49,7 @@ int checkTree (std::vector<std::vector<int>> &v, size_t i, size_t j){
 int main() {
 
 	std::ifstream  plik;
-	plik.open("day8_input.txt", std::ios::in);
+	plik.open("day8_input.txt");
 	std::string temp;
 	unsigned long int answer{};
 	std::vector <std::vector<int>> v;
@@ -76,14 +76,11 @@ int main() {
 		}
 		
 		std::cout<<"Answer: "<<answer<<"\n";
+	}
+	else {
 		
-	} else {
-		
-		std::cout << "Nie otwarto pliku";	
-		
+		std::cout << "File not opened, quitting.";
 	}
 
 	plik.close();
-
-
 }

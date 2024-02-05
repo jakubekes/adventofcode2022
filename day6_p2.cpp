@@ -7,7 +7,7 @@
 int main() {
 
 	std::ifstream  plik;
-	plik.open("day6_input.txt", std::ios::in);
+	plik.open("day6_input.txt");
 	std::string temp;
 	int answer{};
 	std::vector <char> v;
@@ -23,35 +23,25 @@ int main() {
 				}
 				sort(v.begin(), v.end());
 				for (size_t j{}; j<13; j++){
-					//std::cout<<v[j]<<" ";
 					if(v[j]==v[j+1]){
 						flag=false;
 						break;
 					}
 				}
 				v.clear();
-				//std::cout<<"\n";
 				if(flag){
 					answer=i;
 					break;
 				}
 			}
-			
 		}
 	
-		std::cout<<"Answer: "<<answer+14<<"\n";
-		
-		
-		//1908 too low
-		
+		std::cout<<"Answer: "<<answer<<"\n";
 	}
 	else {
 		
-		std::cout << "Nie otwarto pliku";
-		
+		std::cout << "File not opened, quitting.";
 	}
 
 	plik.close();
-
-
 }

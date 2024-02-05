@@ -37,10 +37,7 @@ struct monkey {
 		
 		return false;
 	}
-			/*bool test (int index, int divider){
-			if(items[index]%divider>0) return false;
-			return true;
-		}*/
+
 public:
 	std::vector <unsigned long long int> v;
 	char operationChar{};
@@ -60,7 +57,7 @@ int main() {
 	auto start = std::chrono::high_resolution_clock::now();
 
 	std::ifstream  plik;
-	plik.open("day11_input.txt", std::ios::in);
+	plik.open("day11_input.txt");
 	std::string temp;
 	unsigned long long int answer{};
 
@@ -108,7 +105,6 @@ int main() {
 					std::cout << v[i] << ", ";
 				}
 				std::cout << "\n";
-				
 			}
 			else if (temp.substr(2, 2) == "Op") {
 				operationChar = temp[23];
@@ -129,6 +125,7 @@ int main() {
 				std::cout << "falseCase " << falseCase << "\n";
 			}
 		}
+		
 		m.push_back(monkey(v, operationChar, operationNum, testNum, trueCase, falseCase));
 		v.clear();
 		operationChar = 0;
@@ -137,14 +134,6 @@ int main() {
 		trueCase = 0;
 		falseCase = 0;
 
-			/*std::cout<<"Round: INIT: \n";
-			for (unsigned long long int i=0; i<m.size(); i++){
-					std::cout<<"Monkey "<<i<<" items: ";
-					for (unsigned long long int j=0; j<m[i].v.size(); j++){
-						std::cout<<m[i].v[j]<<" ";		
-					}
-					std::cout<<"\n";
-			}*/
 		unsigned long long int supermodulo{1};
 		
 		for (unsigned long long int i=0; i<m.size(); i++){
@@ -154,17 +143,11 @@ int main() {
 		std::cout<<"Supermodulo: "<<supermodulo<<"\n";
 		
 		for (unsigned long long int i=0; i<10000; i++){
-				
 			for (unsigned long long int j{}; j<m.size(); j++){
-				if (m[j].v.size()==0) continue;
-							
+				if (m[j].v.size()==0) continue;	
 				for(unsigned long long int k{}; k<m[j].v.size(); k++){
-					//std::cout<<"Checking monkey: "<<j<<" element: "<<m[j].v[k]<<"\n";
 					m[j].inspections++;
 					m[j].operation(k);
-					//std::cout<<"After operation: "<<m[j].v[k]<<"\n";
-					//m[j].v[k]/=3;
-					//std::cout<<"After div3: "<<m[j].v[k]<<"\n";
 					bool isDiv = m[j].isDivisible(k);
 					if(isDiv){
 						m[m[j].trueCase].v.push_back(m[j].v[k]%supermodulo);
@@ -178,32 +161,12 @@ int main() {
 						m[j].falseCaseCount++;
 					}
 				}
-				
 			}
-			
-			//std::cout<<"Round: "<<i<<"\n";
-			/*for (int i=0; i<m.size(); i++){
-					std::cout<<"Monkey "<<i<<" items: ";
-					for (int j=0; j<m[i].v.size(); j++){
-						std::cout<<m[i].v[j]<<" ";		
-					}
-					std::cout<<"\n";
-			}*/
 		}
-		
-				/*for (int i=0; i<m.size(); i++){
-					std::cout<<"Monkey "<<i<<" items: ";
-					for (int j=0; j<m[i].v.size(); j++){
-						std::cout<<m[i].v[j]<<" ";		
-					}
-					std::cout<<"\n";
-				}*/
+
 		std::vector<unsigned long long int> insp;
 		for (unsigned long long int i=0; i<m.size(); i++){
-			insp.push_back(m[i].inspections);
-			//std::cout<<"Monkey: "<<i<<" trueCaseCount: "<<m[i].trueCaseCount<<"\n";
-			//std::cout<<"Monkey: "<<i<<" falseCaseCount: "<<m[i].falseCaseCount<<"\n";
-			//std::cout<<"Monkey: "<<i<<" inspections: "<<m[i].inspections<<"\n";			
+			insp.push_back(m[i].inspections);		
 		}
 		
 		plik.close();
@@ -215,14 +178,11 @@ int main() {
 		auto finish = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> elapsed = finish - start;
 		printf("Elapsed time: %f\n", elapsed.count());
-
 	}
 	else {
-
-		std::cout << "Nie otwarto pliku";
-
+		
+		std::cout << "File not opened, quitting.";
 	}
 
 	plik.close();
-
 }

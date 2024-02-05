@@ -75,7 +75,7 @@ private:
 int main() {
 
 	std::ifstream  plik;
-	plik.open("C:\\Users\\Puszek\\source\\repos\\adventofcode2022\\day13_input.txt", std::ios::in);
+	plik.open("day13_input.txt");
 	std::string temp;
 	int sum{};
 	
@@ -138,7 +138,6 @@ int main() {
 							continue;
 						}					
 					} else if (stack1.top().list==true && stack2.top().list==false){
-						
 						if(stack1.top().pos >= stack1.top().idxEnd){
 							sum+=index;
 							break;
@@ -152,22 +151,22 @@ int main() {
 						getNextElement(stack2, s2);
 						stack1.top().isLastNum = true;
 					} else {
-							if(std::stoi(s1.substr(stack1.top().idxStart,stack1.top().numDigits))<std::stoi(s2.substr(stack2.top().idxStart,stack2.top().numDigits))){
+						if(std::stoi(s1.substr(stack1.top().idxStart,stack1.top().numDigits))<std::stoi(s2.substr(stack2.top().idxStart,stack2.top().numDigits))){
+							sum+=index;
+							break;
+						} else if(std::stoi(s1.substr(stack1.top().idxStart,stack1.top().numDigits))>std::stoi(s2.substr(stack2.top().idxStart,stack2.top().numDigits))){
+							break;
+						} else {
+							if(!stack1.top().isLastNum && stack2.top().isLastNum){
+								break;
+							} else if (stack1.top().isLastNum && !stack2.top().isLastNum){
 								sum+=index;
-								break;
-							} else if(std::stoi(s1.substr(stack1.top().idxStart,stack1.top().numDigits))>std::stoi(s2.substr(stack2.top().idxStart,stack2.top().numDigits))){
-								break;
-							} else {
-								if(!stack1.top().isLastNum && stack2.top().isLastNum){
-									break;
-								} else if (stack1.top().isLastNum && !stack2.top().isLastNum){
-									sum+=index;
-									break;	
-								}
-								stack1.pop();
-								stack2.pop();
-								continue;
-							}	
+								break;	
+							}
+							stack1.pop();
+							stack2.pop();
+							continue;
+						}	
 					}
 				}								
 			}	
@@ -178,7 +177,9 @@ int main() {
 		std::cout<< (elapsed.count() / 1000)<<"ms";
 	}
 	else {
-		std::cout << "Nie otwarto pliku";
+		
+		std::cout << "File not opened, quitting.";
 	}
 
+	plik.close();
 }

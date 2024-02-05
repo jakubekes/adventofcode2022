@@ -48,7 +48,7 @@ void checkTree (const std::vector<std::vector<int>> &v, int i, int j, unsigned l
 int main() {
 
 	std::ifstream  plik;
-	plik.open("day8_input.txt", std::ios::in);
+	plik.open("day8_input.txt");
 	std::string temp;
 	unsigned long int answer{};
 	std::vector <std::vector<int>> v;
@@ -66,25 +66,20 @@ int main() {
 		
 		for (size_t i{}; i<v.size(); i++){
 			for (size_t j{}; j<v[0].size(); j++){
-				//std::cout<<v[i][j]<<" ";
 				if(i==0 || j==0 || i==v.size()-1 || j==v[0].size()-1){
 					continue;
 				} else {
 					checkTree(v,i,j,answer);
 				}
 			}
-			//std::cout<<"\n";
 		}
 		
 		std::cout<<"Answer: "<<answer<<"\n";
+	}
+	else {
 		
-	} else {
-		
-		std::cout << "Nie otwarto pliku";	
-		
+		std::cout << "File not opened, quitting.";
 	}
 
 	plik.close();
-
-
 }

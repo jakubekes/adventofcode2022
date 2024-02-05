@@ -5,7 +5,6 @@
 #include <stack>
 #include <queue>
 #include <chrono>
-#include <algorithm>
 
 struct point{
 	
@@ -15,7 +14,6 @@ struct point{
 	int x;
 	char val{};
 	int stepVal{};
-	//std::stack <point*> connections;
 	bool used{};
 };
 
@@ -30,7 +28,7 @@ int main() {
 	auto start = std::chrono::high_resolution_clock::now();
 
 	std::ifstream  plik;
-	plik.open("day12_input.txt", std::ios::in);
+	plik.open("day12_input.txt");
 	std::string temp;
 	unsigned int answer{420};
 	std::queue <point*> mainQueue;
@@ -46,7 +44,6 @@ int main() {
 		int j{};
 		
 		while (getline(plik, temp)) {
-			
 			for(int i{}; i<temp.length(); i++){
 				if(temp[i]=='S' || temp[i] == 'a'){
 					sx=i;
@@ -61,8 +58,7 @@ int main() {
 					vtemp.push_back(new point(j,i,'z'));
 					continue;
 				}							
-				vtemp.push_back(new point(j,i,temp[i]));	
-							
+				vtemp.push_back(new point(j,i,temp[i]));			
 			}
 			
 			j++;
@@ -70,68 +66,58 @@ int main() {
 			vtemp.clear();	
 		}		
 		plik.close();
-
-		
+	
 		for (size_t i{}; i<aPoints.size(); i++){
 			
-		point* p;
-		mainQueue.push(aPoints[i]);
-		aPoints[i]->used=true;
-		aPoints[i]->stepVal=0;
-		bool reachedE{};
+			point* p;
+			mainQueue.push(aPoints[i]);
+			aPoints[i]->used=true;
+			aPoints[i]->stepVal=0;
+			bool reachedE{};
 
-		while(!mainQueue.empty()){
-						
-			p = mainQueue.front();
-			//std::cout<<p->val<<" | y: "<<p->y<<" x: "<<p->x<<"\n";
-			vanswer.push_back(p);
-			if(p->x==ex && p->y==ey){
-				reachedE=true;
-				break;
+			while(!mainQueue.empty()){
+							
+				p = mainQueue.front();
+				vanswer.push_back(p);
+				if(p->x==ex && p->y==ey){
+					reachedE=true;
+					break;
+				}
+				
+				mainQueue.pop();
+				sx = p->x;
+				sy = p->y;
+				
+				if(sx-1>=0 && v[sy][sx-1]->used==false && v[sy][sx-1]->val-v[sy][sx]->val<2) {
+					mainQueue.push(v[sy][sx-1]);
+					mainQueue.back()->used=true;
+					mainQueue.back()->stepVal=v[sy][sx]->stepVal+1;
+				}
+				if(sx+1<v[0].size() && v[sy][sx+1]->used==false && v[sy][sx+1]->val-v[sy][sx]->val<2) {
+					mainQueue.push(v[sy][sx+1]);
+					mainQueue.back()->used=true;
+					mainQueue.back()->stepVal=v[sy][sx]->stepVal+1;
+				}
+				if(sy-1>=0 && v[sy-1][sx]->used==false && v[sy-1][sx]->val-v[sy][sx]->val<2) {
+					mainQueue.push(v[sy-1][sx]);
+					mainQueue.back()->used=true;
+					mainQueue.back()->stepVal=v[sy][sx]->stepVal+1;
+				}		
+				if(sy+1<v.size() && v[sy+1][sx]->used==false && v[sy+1][sx]->val-v[sy][sx]->val<2) {
+					mainQueue.push(v[sy+1][sx]);
+					mainQueue.back()->used=true;
+					mainQueue.back()->stepVal=v[sy][sx]->stepVal+1;
+				}						
 			}
 			
-			mainQueue.pop();
+			for(int i{}; i<vanswer.size(); i++){
+				vanswer[i]->used=false;
+			}
 			
-			sx = p->x;
-			sy = p->y;
-		
+			if (reachedE && vanswer[vanswer.size()-1]->stepVal<answer) answer=vanswer[vanswer.size()-1]->stepVal;
 			
-			if(sx-1>=0 && v[sy][sx-1]->used==false && v[sy][sx-1]->val-v[sy][sx]->val<2) {
-				//std::cout<<"IF1\n";
-				mainQueue.push(v[sy][sx-1]);
-				mainQueue.back()->used=true;
-				mainQueue.back()->stepVal=v[sy][sx]->stepVal+1;
-			}
-			if(sx+1<v[0].size() && v[sy][sx+1]->used==false && v[sy][sx+1]->val-v[sy][sx]->val<2) {
-				//std::cout<<"IF2\n";
-				mainQueue.push(v[sy][sx+1]);
-				mainQueue.back()->used=true;
-				mainQueue.back()->stepVal=v[sy][sx]->stepVal+1;
-			}
-			if(sy-1>=0 && v[sy-1][sx]->used==false && v[sy-1][sx]->val-v[sy][sx]->val<2) {
-				//std::cout<<"IF3\n";
-				mainQueue.push(v[sy-1][sx]);
-				mainQueue.back()->used=true;
-				mainQueue.back()->stepVal=v[sy][sx]->stepVal+1;
-			}		
-			if(sy+1<v.size() && v[sy+1][sx]->used==false && v[sy+1][sx]->val-v[sy][sx]->val<2) {
-				//std::cout<<"IF4\n";
-				mainQueue.push(v[sy+1][sx]);
-				mainQueue.back()->used=true;
-				mainQueue.back()->stepVal=v[sy][sx]->stepVal+1;
-			}
-									
-		}
-		
-		for(int i{}; i<vanswer.size(); i++){
-			vanswer[i]->used=false;
-		}
-		
-		if(reachedE && vanswer[vanswer.size()-1]->stepVal<answer) answer=vanswer[vanswer.size()-1]->stepVal;
-		
-		vanswer.clear();
-		clearQ(mainQueue);
-		
+			vanswer.clear();
+			clearQ(mainQueue);
 		}
 		
 		std::cout<<"Answer: "<<answer<<"\n";
@@ -139,14 +125,11 @@ int main() {
 		auto finish = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> elapsed = finish - start;
 		printf("Elapsed time: %f\n", elapsed.count());
-
 	}
 	else {
-
-		std::cout << "Nie otwarto pliku";
-
+		
+		std::cout << "File not opened, quitting.";
 	}
 
 	plik.close();
-
 }

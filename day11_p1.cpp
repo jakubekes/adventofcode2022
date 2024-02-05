@@ -37,10 +37,7 @@ struct monkey {
 		
 		return false;
 	}
-			/*bool test (int index, int divider){
-			if(items[index]%divider>0) return false;
-			return true;
-		}*/
+
 public:
 	std::vector <unsigned int> v;
 	char operationChar{};
@@ -60,7 +57,7 @@ int main() {
 	auto start = std::chrono::high_resolution_clock::now();
 
 	std::ifstream  plik;
-	plik.open("day11_input.txt", std::ios::in);
+	plik.open("day11_input.txt");
 	std::string temp;
 	unsigned int answer{};
 
@@ -147,10 +144,8 @@ int main() {
 			}
 		
 		for (unsigned int i=0; i<20; i++){
-				
 			for (unsigned int j{}; j<m.size(); j++){
-				if (m[j].v.size()==0) continue;
-							
+				if (m[j].v.size()==0) continue;	
 				for(unsigned int k{}; k<m[j].v.size(); k++){
 					std::cout<<"Checking monkey: "<<j<<" element: "<<m[j].v[k]<<"\n";
 					m[j].inspections++;
@@ -171,32 +166,12 @@ int main() {
 						m[j].falseCaseCount++;
 					}
 				}
-				
 			}
-			
-			//std::cout<<"Round: "<<i<<"\n";
-			/*for (int i=0; i<m.size(); i++){
-					std::cout<<"Monkey "<<i<<" items: ";
-					for (int j=0; j<m[i].v.size(); j++){
-						std::cout<<m[i].v[j]<<" ";		
-					}
-					std::cout<<"\n";
-			}*/
 		}
-		
-				/*for (int i=0; i<m.size(); i++){
-					std::cout<<"Monkey "<<i<<" items: ";
-					for (int j=0; j<m[i].v.size(); j++){
-						std::cout<<m[i].v[j]<<" ";		
-					}
-					std::cout<<"\n";
-				}*/
+
 		std::vector<unsigned int> insp;
 		for (unsigned int i=0; i<m.size(); i++){
-			insp.push_back(m[i].inspections);
-			//std::cout<<"Monkey: "<<i<<" trueCaseCount: "<<m[i].trueCaseCount<<"\n";
-			//std::cout<<"Monkey: "<<i<<" falseCaseCount: "<<m[i].falseCaseCount<<"\n";
-			//std::cout<<"Monkey: "<<i<<" inspections: "<<m[i].inspections<<"\n";			
+			insp.push_back(m[i].inspections);		
 		}
 		
 		plik.close();
@@ -208,15 +183,11 @@ int main() {
 		auto finish = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> elapsed = finish - start;
 		printf("Elapsed time: %f\n", elapsed.count());
-
 	}
 	else {
-
-		std::cout << "Nie otwarto pliku";
-
+		
+		std::cout << "File not opened, quitting.";
 	}
 
 	plik.close();
-
-
 }
